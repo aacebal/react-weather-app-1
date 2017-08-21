@@ -1,6 +1,7 @@
 import React from 'react';
 import { get } from 'axios';
 import ZipForm from './ZipForm';
+import WeatherList from './WeatherList';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,7 +15,9 @@ class App extends React.Component {
     };
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
+    this.onDayClicked = this.onDayClicked.bind(this);
   }
+
   onFormSubmit(zipcode) {
     get(`http://localhost:3000/weather/${zipcode}`)
       .then(({ data }) => {
@@ -24,10 +27,19 @@ class App extends React.Component {
       });
   }
 
+  onDayClicked(dayIndex) {
+    this.setState({ selectedDate: dayIndex });
+  }
+
   render() {
-    return <div className="app">
-      <ZipForm onSubmit={this.onFormSubmit} />
-    </div>;
+    const { dates } = this.state;
+
+    return (
+      <div className="app">
+        <ZipForm onSubmit={this.onFormSubmit} />
+        <WeatherList days={dates} onDayClicked={this.onDayClicked} />
+      </div>
+    );
   }
 }
 
